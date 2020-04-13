@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+
 import api from '../../services/api';
 
 import {
@@ -8,13 +9,13 @@ import {
   Avatar,
   Name,
   Bio,
+  Loading,
   Stars,
   Starred,
   OwnerAvatar,
   Info,
   Title,
   Author,
-  Loading,
 } from './styles';
 
 export default class User extends Component {
@@ -70,6 +71,7 @@ export default class User extends Component {
   };
 
   handleNavigate = (repository) => {
+    console.tron.log('teste');
     const {navigation} = this.props;
 
     navigation.navigate('Repository', {repository});
@@ -78,6 +80,7 @@ export default class User extends Component {
   render() {
     const {navigation} = this.props;
     const {stars, loading, refreshing} = this.state;
+
     const user = navigation.getParam('user');
 
     return (
@@ -92,14 +95,14 @@ export default class User extends Component {
           <Loading />
         ) : (
           <Stars
-            onEndReachedThreshold={0.2}
-            onEndReached={() => this.loadMore(user)}
+            data={stars}
             onRefresh={this.refreshList}
             refreshing={refreshing}
-            data={stars}
+            onEndReachedThreshold={0.2}
+            onEndReached={this.loadMore}
             keyExtractor={(star) => String(star.id)}
             renderItem={({item}) => (
-              <Starred>
+              <Starred onPress={() => this.handleNavigate(item)}>
                 <OwnerAvatar source={{uri: item.owner.avatar_url}} />
                 <Info>
                   <Title>{item.name}</Title>
